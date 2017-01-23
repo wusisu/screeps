@@ -11,7 +11,7 @@ const HARVESTER_HEALTHY_AGE = 300;
 
 exports.create = function(Spawn, role) {
     var name = role + '-' + new Date().getTime()
-    var ret = Spawn.createCreep(['work', 'work', 'carry', 'move'], name, {role})
+    var ret = Spawn.createCreep(['work', 'work', 'carry', 'carry', 'move'], name, {role})
     console.log('creep role:' + role + ' name: ' + name + ' is creating. and ret is ' + ret)
 }
 
