@@ -3,7 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var creeepCreate = require('creep.create')
 
-var INTERVAL_CREATE_CREEP = 8
+var INTERVAL_CREATE_CREEP = 10
 
 module.exports.loop = function () {
 

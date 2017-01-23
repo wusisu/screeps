@@ -14,7 +14,6 @@ var roleHarvester = {
                             structure.energy < structure.energyCapacity;
                     }
             });
-            console.log(targets)
             if(targets.length > 0) {
                 if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
@@ -23,7 +22,7 @@ var roleHarvester = {
                 targets = creep.room.find(FIND_STRUCTURES, {
                     filter: s => s.structureType == STRUCTURE_SPAWN
                 })
-                console.log('harvesting is boring and go home ', targets.length)
+                // console.log('harvesting is boring and go home ', targets.length)
                 if (targets.length)
                     creep.moveTo(targets[0]);
             }
