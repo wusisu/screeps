@@ -1,7 +1,7 @@
 const SPAWN_TEMPLATE = {
     creeps: [
-        ['harvester', 4],
-        ['builder', 6],
+        ['harvester', 5],
+        ['builder', 2],
         ['upgrader', 8],
     ]
 }
@@ -11,7 +11,7 @@ const HARVESTER_HEALTHY_AGE = 300;
 
 exports.create = function(Spawn, role) {
     var name = role + '-' + new Date().getTime()
-    var ret = Spawn.createCreep(['work', 'work', 'carry', 'carry', 'move'], name, {role})
+    var ret = Spawn.createCreep(['work', 'work', 'carry', 'carry', 'carry', 'move', 'move'], name, {role})
     console.log('creep role:' + role + ' name: ' + name + ' is creating. and ret is ' + ret)
 }
 

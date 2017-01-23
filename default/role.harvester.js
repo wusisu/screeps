@@ -1,13 +1,20 @@
 const creepWorkerCommon = require('./creep.worker.common')
 
-var roleHarvester = {
+exports.changeJob = function(creep, job) {
+    creep.memory.job = job
+    creep.say(job)
+}
 
-    /** @param {Creep} creep **/
-    run: function(creep) {
-	    if(creep.carry.energy < creep.carryCapacity) {
+var jobs = {
+    collecting: function(creep) {
+        if(creep.carry.energy < creep.carryCapacity) {
             creepWorkerCommon.getResource(creep)
+        }else {
+            exports.changeJob(creep, 'charging');
         }
-        else {
+    },
+    charging: function(creep) {
+        if (creep.carry.energy > 0) {
             var targets = creep.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
@@ -15,8 +22,12 @@ var roleHarvester = {
                     }
             });
             if(targets.length > 0) {
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+                var target = targets[0]
+                if(targets.length > 1) {
+                    target = targets[1]
+                }
+                if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
                 }
             }else {
                 targets = creep.room.find(FIND_STRUCTURES, {
@@ -26,8 +37,19 @@ var roleHarvester = {
                 if (targets.length)
                     creep.moveTo(targets[0]);
             }
+        }else {
+            exports.changeJob(creep, 'collecting')
         }
-	}
-};
+    },
+}
+exports.doJob = function(creep) {
+    var job = jobs[creep.memory.job]
+    if (job) {
+        return job(creep)
+    }
+    exports.changeJob(creep, 'collecting')
+}
 
-module.exports = roleHarvester;
+exports.run = function(creep) {
+    exports.doJob(creep)
+}
