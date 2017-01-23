@@ -1,4 +1,4 @@
-var SPAWN_TEMPLATE = {
+const SPAWN_TEMPLATE = {
     creeps: [
         ['harvester', 3],
         ['upgrader', 5],
@@ -6,46 +6,46 @@ var SPAWN_TEMPLATE = {
     ]
 }
 
-var creepCreate = {
-    do : function(Spawn) {
+//至少需要存在一个 age tick 以上的 harvester
+const HARVESTER_HEALTHY_AGE = 300;
 
-        // console.log('do creepCreate')
+exports.create = function(role) {
+    var name = role + '-' + new Date().getTime()
+    var ret = Spawn.createCreep(['work', 'carry', 'move'], name, {role})
+    console.log('creep role:' + role + ' name: ' + name + ' is creating. and ret is ' + ret)
+}
 
-
-        //Memory clean
-        for (var name in Memory.creeps) {
-            if (!Game.creeps[name]) {
-                delete Memory.creeps[name];
-            }
+exports.do = function(Spawn) {
+    //Memory clean
+    for (var name in Memory.creeps) {
+        if (!Game.creeps[name]) {
+            delete Memory.creeps[name];
         }
+    }
 
-        var aliveCreepCount = {}
+    harvesterAgeHealth = false;
 
-        for(var name in Game.creeps) {
-            var creep = Game.creeps[name];
-            if (!creep) {
-                delete Memory.creeps[name];
-                continue;
-            }
+    var aliveCreepCount = {}
 
-            aliveCreepCount[creep.memory.role] = aliveCreepCount[creep.memory.role] ? aliveCreepCount[creep.memory.role] + 1 : 1;
-        }
+    for(var name in Game.creeps) {
+        var creep = Game.creeps[name];
+        aliveCreepCount[creep.memory.role] = aliveCreepCount[creep.memory.role] ? aliveCreepCount[creep.memory.role] + 1 : 1;
+        harvesterAgeHealth = harvesterAgeHealth || creep.memory.role === 'harvester' && creep.ticksToLive > HARVESTER_HEALTHY_AGE
+    }
 
-        // console.log(JSON.stringify(aliveCreepCount))
+    if (!harvesterAgeHealth) {
+        return exports.create(role)
+    }
 
-        for(index in SPAWN_TEMPLATE.creeps) {
-            var item = SPAWN_TEMPLATE.creeps[index]
-            var role = item[0]
-            var targetCount = item[1]
-            var alive = aliveCreepCount[role]
-            if (!alive || alive < targetCount) {
-                var name = Spawn.createCreep(['work', 'carry', 'move'], undefined, {role})
-                if(typeof name != 'number') {
-                    console.log('creep role:' + role + ' name: ' + name + ' is creating.')
-                }
-            }
+    // console.log(JSON.stringify(aliveCreepCount))
+
+    for(index in SPAWN_TEMPLATE.creeps) {
+        var item = SPAWN_TEMPLATE.creeps[index]
+        var role = item[0]
+        var targetCount = item[1]
+        var alive = aliveCreepCount[role]
+        if (!alive || alive < targetCount) {
+            return exports.create(role)
         }
     }
 }
-
-module.exports = creepCreate
