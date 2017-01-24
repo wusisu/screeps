@@ -34,7 +34,7 @@ exports.do = function(Spawn) {
     }
 
     if (!harvesterAgeHealth) {
-        return exports.create(Spawn, role)
+        return exports.create(Spawn, 'harvester')
     }
 
     // console.log(JSON.stringify(aliveCreepCount))
