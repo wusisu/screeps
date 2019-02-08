@@ -1,5 +1,39 @@
 var helper = require('creep.helper')
 var stage = require('stage')
+var _ = require('lodash')
+
+var STRUCTURES = [
+    STRUCTURE_SPAWN,
+    STRUCTURE_EXTENSION,
+    STRUCTURE_CONTAINER,
+    STRUCTURE_STORAGE,
+    STRUCTURE_TOWER,
+
+    STRUCTURE_ROAD,
+
+    STRUCTURE_RAMPART,
+    STRUCTURE_KEEPER_LAIR,
+    STRUCTURE_PORTAL,
+    STRUCTURE_CONTROLLER,
+    STRUCTURE_LINK,
+    STRUCTURE_OBSERVER,
+    STRUCTURE_POWER_BANK,
+    STRUCTURE_POWER_SPAWN,
+    STRUCTURE_EXTRACTOR,
+    STRUCTURE_LAB,
+    STRUCTURE_TERMINAL,
+    
+    STRUCTURE_NUKER,
+    STRUCTURE_WALL,
+]
+
+var nextToBuild = function(creep) {
+    var sites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
+    sites = _.sortBy(sites, function(s) {
+        return s.progress * 1.0 / s.progressTotal + STRUCTURES.indexOf(s.structureType)
+    })
+    return sites[0]
+}
 
 var build = function(creep) {
     if (!stage.shouldRun('SPAWN-3-BUILDER')) {
@@ -11,7 +45,11 @@ var build = function(creep) {
         creep.say('stopped')
         return
     }
-    var building = creep.room.find(FIND_CONSTRUCTION_SITES)[0]
+    var building = Game.getObjectById(creep.memory.target)
+    if (!building) {
+        building = nextToBuild(creep)
+        if (building) creep.memory.target = building.id
+    }
     if (!building) {
         creep.say('no building!')
     }

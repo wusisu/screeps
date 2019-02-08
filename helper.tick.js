@@ -53,7 +53,8 @@ var tick = function() {
 }
 
 var register = function(moduleName, interval, force) {
-    if (!getTick(moduleName)) {
+    var tick = getTick(moduleName)
+    if (!tick || tick[0] !== interval) {
         setTick(moduleName, interval)
     }
 }

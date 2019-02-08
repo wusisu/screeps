@@ -9,6 +9,6 @@ module.exports.loop = function () {
     for (var creep in Game.creeps) {
         moduleCreep.run(Game.creeps[creep])
     }
-    tick.register('stageTick', 100)
+    tick.register('stageTick', 40)
     tick.tick()
 }

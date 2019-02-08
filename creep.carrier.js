@@ -35,6 +35,9 @@ var withdraw = function(creep, changeJob) {
     var ret = creep.withdraw(target, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(target)
+    } else if (ret === ERR_NOT_ENOUGH_ENERGY) {
+        creep.memory.target = null
+        return think(creep)
     } else {
         creep.say(ret)
     }

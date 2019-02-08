@@ -35,6 +35,7 @@ var doSpawnCreep = function(spawn, role) {
 
 var shouldEnsureCreeps = function(stageLimit, role, count, basic) {
     return function(spawn) {
+        // console.log(stageLimit, role, count)
         if (!stage.shouldRun(stageLimit)) return false
         var creeps = spawn.room.find(FIND_CREEPS, {filter: creepHelper.roleFilter(role)})
         if (creeps.length >= count) return false
