@@ -28,9 +28,15 @@ var hasNoneEnergy = function(creep) {
     return _.sum(creep.carry) === 0
 }
 
+var isMoreThan = function(room, role, count) {
+    var creeps = room.find(FIND_CREEPS, {filter: roleFilter(role)})
+    return creeps.length > count
+}
+
 module.exports = {
     walk,
     roleFilter,
     isFullOfEnergy,
     hasNoneEnergy,
+    isMoreThan,
 };

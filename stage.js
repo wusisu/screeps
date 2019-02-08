@@ -13,7 +13,12 @@ var between = function(stageLeft, stageRight) {
     constants.STAGES.indexOf(stageRight) >= _stageIndex
 }
 
+var after = function(stage) {
+    return constants.STAGES.indexOf(stage) > _stageIndex
+}
+
 module.exports = {
     shouldRun,
     between,
+    after,
 };

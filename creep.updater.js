@@ -26,7 +26,7 @@ var run = function(creep) {
     if (creep.memory.target) {
         target = Game.getObjectById(creep.memory.target)
     }
-    if (_.sum(creep.carry) < creep.carryCapacity) {
+    if (_.sum(creep.carry) === 0) {
         if (!(target instanceof StructureSpawn)) {
             target = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
             if (target == null) return

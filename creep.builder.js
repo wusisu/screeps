@@ -3,6 +3,11 @@ var stage = require('stage')
 
 var build = function(creep) {
     if (!stage.shouldRun('SPAWN-3-BUILDER')) {
+        if (helper.isMoreThan(creep.room, 'builder', 1)) {
+            creep.say('b2c')
+            creep.memory.role = 'carrier'
+            return
+        }
         creep.say('stopped')
         return
     }

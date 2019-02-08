@@ -29,13 +29,11 @@ var ensureSource = function(creep) {
 var ensureCache = function(creep) {
     if (!creep.memory || !creep.memory.cache) {
         var cache = null
-        if (!stage.shouldRun('SPAWN-3-UPDATER')) {
-            cache = creep.room.find(FIND_MY_SPAWNS)[0]
-        } else {
-            var source = ensureSource(creep)
-            var sourcePf = sourcePrefer(creep.room)[source.id]
-            cache = sourcePf.cache
-        }
+        cache = creep.pos.findClosestByPath(FIND_STRUCTURES, { 
+            filter: { structureType: STRUCTURE_CONTAINER },
+            range: 5,
+        })
+        if (!cache) cache = creep.room.find(FIND_MY_SPAWNS)[0]
         if (!cache) {
             console.log('no prefer cache ?')
         }
@@ -65,7 +63,8 @@ var sourceBinding = function(room) {
     return binding
 }
 
-var fulfill = function(room) {
+var fulfill = function(room, diff) {
+    diff = diff || 0
     var binding = sourceBinding(room)
     var sourcePfs = sourcePrefer(room)
     if (!sourcePfs) return
@@ -73,7 +72,7 @@ var fulfill = function(room) {
         var sourcePf = sourcePfs[sourceId]
         var preferCount = sourcePf.creeps
         var actualCount = binding[sourceId] || 0
-        if (preferCount > actualCount) {
+        if (preferCount > actualCount + diff) {
             return false
         }
     }

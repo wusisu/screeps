@@ -1,14 +1,15 @@
 
 module.exports = {
-    myRoom: 'W5N8',
+    myRoom: 'W8N3',
     rooms: {
-        W5N8: {
+        W8N3: {
             sources: {
-                '9fa9077331385d3': {creeps: 3, cache: '290a7c85b48623e'},
-                '68050773313e4cb': {creeps: 3, cache: '0b087c6f3289a27'},
+                '26f20772347f879': {creeps: 3},
+                '71ac0772347ffe6': {creeps: 3},
             },
-            containers: [
-                '290a7c85b48623e',
+            mineContainers: [
+                'f650bce1736b145',
+                'fb75bce246eee00',
             ],
         },
     },
