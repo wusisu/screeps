@@ -10,7 +10,7 @@ var upgrade = function(creep, target) {
     if (ret !== OK) creep.say(ret)
 }
 
-var charge = function(creep, target) {
+var charge = function(creep, cache) {
     if (!stage.shouldRun('SPAWN-1-UPDATER')) return
     if (!cache) {
         cache = Game.getObjectById(creep.memory.cache)
@@ -31,7 +31,7 @@ var run = function(creep) {
     }
     if (_.sum(creep.carry) === 0) {
         if (!(target instanceof StructureSpawn)) {
-            target = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
+            target = helper.withdrawTarget(creep)
             if (target == null) return
             creep.memory.target = target.id
         }

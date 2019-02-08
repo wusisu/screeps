@@ -51,7 +51,7 @@ var transferTarget = function(creep, emergency) {
     }
     var extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(e) {
-            e.structureType === STRUCTURE_EXTENSION &&
+            return e.structureType === STRUCTURE_EXTENSION &&
             e.energy < e.energyCapacity
         }
     })
@@ -69,7 +69,6 @@ var transferTarget = function(creep, emergency) {
 var transfer = function(creep, changeJob) {
     if (changeJob) creep.memory.task = TASK_TRANSFER
     if (helper.hasNoneEnergy(creep)) {
-        creep.memory.cache = null
         return think(creep)
     }
     var target = Game.getObjectById(creep.memory.cache)
@@ -90,6 +89,7 @@ var transfer = function(creep, changeJob) {
 var think = function(creep) {
     creep.memory.target = null
     creep.memory.cache = null
+    creep.memory.energy = null
     var emergency = transferTarget(creep, true)
     if (emergency) {
         if (!helper.hasNoneEnergy(creep)) {
