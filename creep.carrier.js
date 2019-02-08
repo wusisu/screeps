@@ -38,7 +38,8 @@ var pickup = function(creep, changeJob) {
         target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
         if (!target) {
             if (!helper.hasNoneEnergy(creep)) creep.memory.task = TASK_TRANSFER
-            return
+            creep.memory.task = null
+            return 
         }
         creep.memory.energy = target.id
     }
@@ -105,7 +106,7 @@ var needRebalance = function(creep) {
     var empty = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(s) {
             return s.structureType === STRUCTURE_CONTAINER &&
-            _.sum(s.store) < s.storeCapacity * 0.3
+            _.sum(s.store) < s.storeCapacity * 0.4
         }
     })
     if (!full && !empty) return null

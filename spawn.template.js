@@ -22,6 +22,7 @@ var COST = {
 
 var TEMPLATE_BUILDERS = {
     harvester: function(energyLimit) {
+        energyLimit = _.min([energyLimit, 500])
         var energy = 100
         var weight = 2
         var template = [CARRY, MOVE]
@@ -63,6 +64,7 @@ var TEMPLATE_BUILDERS = {
         }
     },
     carrier: function(energyLimit) {
+        energyLimit = _.min([energyLimit, 800])
         var energy = 100
         var weight = 2
         var template = [CARRY, MOVE]
