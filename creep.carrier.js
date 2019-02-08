@@ -5,32 +5,14 @@ var TASK_WITHDRAW = 'withdraw'
 var TASK_TRANSFER = 'transfer'
 var TASK_PICKUP = 'pickup'
 
-
-var withdrawTarget = function(creep) {
-    var containers = creep.room.find(FIND_STRUCTURES, { 
-        filter: function(c) {
-            return c.structureType === STRUCTURE_CONTAINER &&
-            c.store[RESOURCE_ENERGY] > 0
-        }
-    })
-    containers = _.sortBy(containers, function(c) {
-        return PathFinder.search(creep.pos, c).cost
-    })
-    var target = containers[0]
-    if (target) {
-        creep.memory.target = target.id
-    }
-    return target
-}
-
 var withdraw = function(creep, changeJob) {
     if (changeJob) creep.memory.task = TASK_WITHDRAW
     if (helper.isFullOfEnergy(creep)) {
         return think(creep)
     }
-    var target = Game.getObjectById(creep.memory.target)
+    var target = Game.getObjectById(creep.memory.cache)
     if (!target) {
-        target = withdrawTarget(creep)
+        target = helper.withdrawTarget(creep)
     }
     var ret = creep.withdraw(target, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {

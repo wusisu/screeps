@@ -30,8 +30,9 @@ var STRUCTURES = [
 var nextToBuild = function(creep) {
     var sites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
     sites = _.sortBy(sites, function(s) {
-        return s.progress * 1.0 / s.progressTotal + STRUCTURES.indexOf(s.structureType)
+        return 1 - s.progress * 1.0 / s.progressTotal + STRUCTURES.indexOf(s.structureType)
     })
+    console.log(sites[0])
     return sites[0]
 }
 
@@ -56,15 +57,18 @@ var build = function(creep) {
     var ret = creep.build(building)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(building)
+    } else if (ret === ERR_INVALID_TARGET) {
+        creep.memory.target = null
     }
     if (helper.hasNoneEnergy(creep)) {
         creep.memory.task = 'withdraw'
+        creep.memory.target = null
     }
 }
 
 var ensureCache = function(creep) {
     if (!creep.memory || !creep.memory.cache) {
-        var cache = creep.room.find(FIND_MY_SPAWNS)[0]
+        var cache = helper.withdrawTarget(creep)
         if (!cache) {
             console.log('no cache ?')
         }
@@ -81,6 +85,7 @@ var withdraw = function(creep) {
     }
     if (helper.isFullOfEnergy(creep)) {
         creep.memory.task = 'building'
+        creep.memory.cache = null
     }
 }
 

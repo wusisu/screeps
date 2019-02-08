@@ -17,7 +17,9 @@ var STAGES = [
     'BUILD-1-CONTAINER',
     'SPAWN-3-UPDATER',
     'WAIT-FOR-LEVEL-2',
+    'BUILD-5-EXTENTION',
     'WAIT-FOR-LEVEL-3',
+    'BUILD-STORAGE',
     'END',
 ]
 

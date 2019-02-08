@@ -10,6 +10,13 @@ var hasSomeCreeps = function(stage, role, count) {
     }
 }
 
+var hasSomeStructures = function(stage, structureType, count) {
+    return function(room) {
+        var structures = room.find(FIND_STRUCTURES, {filter: { structureType }})
+        return structures.length >= count ? null : stage
+    }
+}
+
 var waitForLevel = function(stage, level) {
     return function(room) {
         return room.controller.level >= level ? null : stage
@@ -31,7 +38,9 @@ var stageDetermines = [
     },
     hasSomeCreeps('SPAWN-3-UPDATER', 'updater', 3),
     waitForLevel('WAIT-FOR-LEVEL-2', 2),
+    hasSomeStructures('BUILD-5-EXTENTION', STRUCTURE_EXTENSION, 5),
     waitForLevel('WAIT-FOR-LEVEL-3', 3),
+    hasSomeStructures('BUILD-5-EXTENTION', STRUCTURE_STORAGE, 1),
     function(room) {
         return 'END'
     }

@@ -33,10 +33,28 @@ var isMoreThan = function(room, role, count) {
     return creeps.length > count
 }
 
+var withdrawTarget = function(creep) {
+    var containers = creep.room.find(FIND_STRUCTURES, { 
+        filter: function(c) {
+            return c.structureType === STRUCTURE_CONTAINER &&
+            c.store[RESOURCE_ENERGY] > 0
+        }
+    })
+    containers = _.sortBy(containers, function(c) {
+        return PathFinder.search(creep.pos, c).cost
+    })
+    var target = containers[0]
+    if (target) {
+        creep.memory.cache = target.id
+    }
+    return target
+}
+
 module.exports = {
     walk,
     roleFilter,
     isFullOfEnergy,
     hasNoneEnergy,
     isMoreThan,
+    withdrawTarget,
 };
