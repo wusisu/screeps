@@ -20,8 +20,9 @@ var roleFilter = function(role) {
     }
 }
 
-var isFullOfEnergy = function(creep) {
-    return _.sum(creep.carry) === creep.carryCapacity
+var isFullOfEnergy = function(creep, diff) {
+    diff = diff || 0
+    return _.sum(creep.carry) + diff >= creep.carryCapacity
 }
 
 var hasNoneEnergy = function(creep) {

@@ -79,10 +79,21 @@ var fulfill = function(room, diff) {
     return true
 }
 
+var considerFull = function(creep) {
+    if (!creep.memory.workAbility) {
+        var count = creep.getActiveBodyparts(WORK)
+        if (!count) count = -1
+        creep.memory.workAbility = count * 2
+    }
+    var workAbility = creep.memory.workAbility
+    return creepHelper.isFullOfEnergy(creep, workAbility)
+}
+
 module.exports = {
     findSource,
     ensureSource,
     sourceBinding,
     fulfill,
     ensureCache,
+    considerFull,
 };

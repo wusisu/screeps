@@ -4,6 +4,7 @@ var helper = require('creep.helper')
 var TASK_WITHDRAW = 'withdraw'
 var TASK_TRANSFER = 'transfer'
 var TASK_PICKUP = 'pickup'
+var TASK_REBALANCE = 'rebalance'
 
 var withdraw = function(creep, changeJob) {
     if (changeJob) creep.memory.task = TASK_WITHDRAW
@@ -94,6 +95,23 @@ var transfer = function(creep, changeJob) {
     }
 }
 
+var needRebalance = function(creep) {
+    var full = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: function(s) {
+            return s.structureType === STRUCTURE_CONTAINER &&
+            _.sum(s.store) > s.storeCapacity * 0.7
+        }
+    })
+    var empty = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: function(s) {
+            return s.structureType === STRUCTURE_CONTAINER &&
+            _.sum(s.store) < s.storeCapacity * 0.3
+        }
+    })
+    if (!full && !empty) return null
+    return {full, empty}
+}
+
 var think = function(creep) {
     creep.memory.target = null
     creep.memory.cache = null
@@ -105,10 +123,23 @@ var think = function(creep) {
         }
         return withdraw(creep, true)
     }
-    if (helper.isFullOfEnergy(creep)) {
-        return transfer(creep, true)
+    var drops = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+    if (drops) {
+        if (!helper.isFullOfEnergy(creep)) {
+            return pickup(creep, true)
+        }
     }
-    return pickup(creep, true)
+    var rebalance = needRebalance(creep)
+    if (rebalance) {
+        if (rebalance.full && !helper.isFullOfEnergy(creep)) {
+            creep.memory.cache = rebalance.full.id
+            return withdraw(creep, true)
+        }
+        if (rebalance.empty && !helper.hasNoneEnergy(creep)) { 
+            creep.memory.cache = rebalance.empty.id
+            return transfer(creep, true)
+        }
+    }
 }
 
 module.exports = {
