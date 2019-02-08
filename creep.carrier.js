@@ -44,21 +44,26 @@ var pickup = function(creep, changeJob) {
     }
 }
 
-var transferTarget = function(creep) {
+var transferTarget = function(creep, emergency) {
     var spawn = creep.room.find(FIND_MY_SPAWNS)[0]
     if (spawn.energy < spawn.energyCapacity) {
         return spawn
     }
-    var containers = creep.room.find(FIND_STRUCTURES, { 
+    var extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: function(e) {
+            e.structureType === STRUCTURE_EXTENSION &&
+            e.energy < e.energyCapacity
+        }
+    })
+    if (extension) return extension
+    if (emergency) return 
+    var container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(c) {
-            c.structureType === STRUCTURE_CONTAINER &&
+            c.structureType === FIND_STRUCTURES &&
             _.sum(c.store) < c.storeCapacity
         }
     })
-    containers = _.sortBy(containers, function(c) {
-        return PathFinder.search(creep.pos, c).cost
-    })
-    return containers[0]
+    return container
 }
 
 var transfer = function(creep, changeJob) {
@@ -83,8 +88,10 @@ var transfer = function(creep, changeJob) {
 }
 
 var think = function(creep) {
-    var spawn = creep.room.find(FIND_MY_SPAWNS)[0]
-    if (spawn.energy < spawn.energyCapacity) {
+    creep.memory.target = null
+    creep.memory.cache = null
+    var emergency = transferTarget(creep, true)
+    if (emergency) {
         if (!helper.hasNoneEnergy(creep)) {
             return transfer(creep, true)
         }

@@ -1,5 +1,5 @@
 var _ = require('lodash')
-var creepHelper = require('creep.helper')
+var helper = require('creep.helper')
 var stage = require('stage')
 
 var upgrade = function(creep, target) {
@@ -12,15 +12,18 @@ var upgrade = function(creep, target) {
 
 var charge = function(creep, target) {
     if (!stage.shouldRun('SPAWN-1-UPDATER')) return
-    if (!target) {
-        target = Game.getObjectById(creep.memory.target)
+    if (!cache) {
+        cache = Game.getObjectById(creep.memory.cache)
     }
-    var ret = creep.withdraw(target, RESOURCE_ENERGY);
+    if (!cache) {
+        cache = helper.withdrawTarget(creep)
+    }
+    var ret = creep.withdraw(cache, RESOURCE_ENERGY);
     if (ret !== OK) creep.say(ret)
 }
 
 var run = function(creep) {
-    var walked = creepHelper.walk(creep)
+    var walked = helper.walk(creep)
     if (walked) return
     var target = null
     if (creep.memory.target) {
@@ -37,7 +40,7 @@ var run = function(creep) {
             return
         }
         creep.memory.walking = true
-        creepHelper.walk(creep)
+        helper.walk(creep)
         return
     }
     if (target instanceof Source) {
@@ -50,7 +53,7 @@ var run = function(creep) {
         return
     }
     creep.memory.walking = true
-    creepHelper.walk(creep)
+    helper.walk(creep)
     return
     
 }

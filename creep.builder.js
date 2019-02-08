@@ -32,7 +32,7 @@ var nextToBuild = function(creep) {
     sites = _.sortBy(sites, function(s) {
         return 1 - s.progress * 1.0 / s.progressTotal + STRUCTURES.indexOf(s.structureType)
     })
-    console.log(sites[0])
+    // console.log(sites[0])
     return sites[0]
 }
 
