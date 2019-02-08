@@ -70,7 +70,8 @@ var ensureCache = function(creep) {
     if (!creep.memory || !creep.memory.cache) {
         var cache = helper.withdrawTarget(creep)
         if (!cache) {
-            console.log('no cache ?')
+            creep.say('no cache')
+            return
         }
         creep.memory.cache = cache.id
     }
@@ -79,6 +80,7 @@ var ensureCache = function(creep) {
 
 var withdraw = function(creep) {
     var cache = ensureCache(creep)
+    if (!cache) return
     var ret = creep.withdraw(cache, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(cache)

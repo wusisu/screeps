@@ -14,13 +14,15 @@ var withdraw = function(creep, changeJob) {
     if (!target) {
         target = helper.withdrawTarget(creep)
     }
+    if (!target) {
+        return pickup(creep)
+    }
     var ret = creep.withdraw(target, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(target)
-    } else if (ret === ERR_NOT_ENOUGH_ENERGY) {
-        creep.memory.target = null
+    } else if (ret === ERR_NOT_ENOUGH_ENERGY || ret === ERR_INVALID_TARGET) {
         return think(creep)
-    } else {
+    } else if (ret !== OK) {
         creep.say(ret)
     }
 }
@@ -39,8 +41,13 @@ var pickup = function(creep, changeJob) {
         }
         creep.memory.energy = target.id
     }
-    if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+    var ret = creep.pickup(target)
+    if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
+    } else if (ret === ERR_INVALID_TARGET) {
+        return think(creep)
+    } else if (ret !== OK) {
+        creep.say(ret)
     }
 }
 
@@ -49,17 +56,17 @@ var transferTarget = function(creep, emergency) {
     if (spawn.energy < spawn.energyCapacity) {
         return spawn
     }
-    var extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    var extension = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: function(e) {
             return e.structureType === STRUCTURE_EXTENSION &&
             e.energy < e.energyCapacity
         }
     })
     if (extension) return extension
-    if (emergency) return 
+    if (emergency) return
     var container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(c) {
-            c.structureType === FIND_STRUCTURES &&
+            return c.structureType === STRUCTURE_CONTAINER &&
             _.sum(c.store) < c.storeCapacity
         }
     })
@@ -80,9 +87,10 @@ var transfer = function(creep, changeJob) {
     var ret = creep.transfer(target, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
-    } else if (ret === ERR_FULL) {
-        creep.memory.cache = null
+    } else if (ret === ERR_FULL || ret === ERR_INVALID_TARGET) {
         return think(creep)
+    } else if (ret !== OK) {
+        creep.say(ret)
     }
 }
 

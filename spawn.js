@@ -6,7 +6,7 @@
  * var mod = require('spawn');
  * mod.thing == 'a thing'; // true
  */
- var levelOne = require('spawn.level1')
+ var levelOne = require('spawn.main')
 
 module.exports = {
     run: function (spawn) {

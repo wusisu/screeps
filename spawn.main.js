@@ -1,23 +1,13 @@
 var _ = require('lodash')
-var creepHelper = require('creep.helper')
+var helper = require('creep.helper')
 var stage = require('stage')
 var harvesterHelper = require('creep.harvester.helper')
+var templateHelper = require('spawn.template')
 
-var getTemplate = function(role) {
-    switch(role) {
-        case 'harvester':
-            return [WORK, WORK, CARRY, MOVE]
-        case 'updater':
-        case 'builder':
-        case 'carrier':
-        default:
-            return [WORK, CARRY, MOVE, MOVE]
-    }
-}
 
-var doSpawnCreep = function(spawn, role) {
+var doSpawnCreep = function(spawn, role, opt) {
     var name = role + '-' + new Date().getTime()
-    var template = getTemplate(role)
+    var template = templateHelper.getTemplate(spawn, role, opt)
     var testIfCanSpawn = spawn.spawnCreep(template, name, {
         dryRun: true,
     })
@@ -26,7 +16,7 @@ var doSpawnCreep = function(spawn, role) {
             memory: {role},
         });
         if (ret == OK) {
-            console.log('spawning creep: ' + name)
+            console.log('spawning creep: ' + name, template)
         } else {
             console.log('try to spawn creep and got error: ' + ret)
         }
@@ -37,7 +27,7 @@ var shouldEnsureCreeps = function(stageLimit, role, count, basic) {
     return function(spawn) {
         // console.log(stageLimit, role, count)
         if (!stage.shouldRun(stageLimit)) return false
-        var creeps = spawn.room.find(FIND_CREEPS, {filter: creepHelper.roleFilter(role)})
+        var creeps = spawn.room.find(FIND_CREEPS, {filter: helper.roleFilter(role)})
         if (creeps.length >= count) return false
         if (basic) {
             doSpawnCreep(spawn, role, {energe: 300})
@@ -50,9 +40,9 @@ var shouldEnsureCreeps = function(stageLimit, role, count, basic) {
 
 var shouldMakeupCarrier = function(spawn) {
     if (!stage.shouldRun('HARVESTER-EACH-SOURCE')) return false
-    var creeps = spawn.room.find(FIND_CREEPS, {filter: creepHelper.roleFilter('harvester')})
-    var creepsCarrier = spawn.room.find(FIND_CREEPS, {filter: creepHelper.roleFilter('carrier')})
-    if (creepsCarrier.length >= creeps.length / 2) return false
+    var creeps = spawn.room.find(FIND_CREEPS, {filter: helper.roleFilter('harvester')})
+    var creepsCarrier = spawn.room.find(FIND_CREEPS, {filter: helper.roleFilter('carrier')})
+    if (creepsCarrier.length >= creeps.length) return false
     doSpawnCreep(spawn, 'carrier')
     return true
 }
