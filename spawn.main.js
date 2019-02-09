@@ -63,7 +63,7 @@ var ensureList = [
     shouldEnsureCreeps('SPAWN-1-UPDATER', 'updater', 1, true),
     shouldEnsureFulfillHarvester,
     shouldEnsureCreeps('SPAWN-3-BUILDER', 'builder', 3),
-    shouldEnsureCreeps('SPAWN-1-UPDATER', 'updater', 3),
+    shouldEnsureCreeps('SPAWN-1-UPDATER', 'updater', 4),
 ]
 
 var spawnCreep = function(spawn) {

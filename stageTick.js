@@ -40,7 +40,9 @@ var stageDetermines = [
     waitForLevel('WAIT-FOR-LEVEL-2', 2),
     hasSomeStructures('BUILD-5-EXTENTION', STRUCTURE_EXTENSION, 5),
     waitForLevel('WAIT-FOR-LEVEL-3', 3),
-    hasSomeStructures('BUILD-5-EXTENTION', STRUCTURE_STORAGE, 1),
+    hasSomeStructures('BUILD-10-EXTENTION', STRUCTURE_EXTENSION, 10),
+    waitForLevel('WAIT-FOR-LEVEL-4', 4),
+    hasSomeStructures('BUILD-STORAGE', STRUCTURE_STORAGE, 1),
     function(room) {
         return 'END'
     }

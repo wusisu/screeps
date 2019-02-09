@@ -35,16 +35,12 @@ var isMoreThan = function(room, role, count) {
 }
 
 var withdrawTarget = function(creep) {
-    var containers = creep.room.find(FIND_STRUCTURES, { 
-        filter: function(c) {
-            return c.structureType === STRUCTURE_CONTAINER &&
-            c.store[RESOURCE_ENERGY] > 0
+    var target = creep.pos.findClosestByPath(FIND_STRUCTURES, { 
+        filter: function(s) {
+            return s.structureType === STRUCTURE_CONTAINER &&
+            _.sum(s.store) > s.storeCapacity * 0.2
         }
     })
-    containers = _.sortBy(containers, function(c) {
-        return PathFinder.search(creep.pos, c).cost
-    })
-    var target = containers[0]
     if (target) {
         creep.memory.cache = target.id
     }

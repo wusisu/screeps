@@ -36,7 +36,7 @@ var nextToBuild = function(creep) {
     sites = _.sortBy(sites, function(s) {
         return 1 - s.progress * 1.0 / s.progressTotal + STRUCTURES.indexOf(s.structureType)
     })
-    // console.log(sites[0])
+    // console.log('next to build', sites[0])
     return sites[0]
 }
 
@@ -124,8 +124,8 @@ var fix = function(creep, changeJob) {
         var containers = shouldFix(creep, 0.2, STRUCTURE_CONTAINER)
         if (containers[0]) target = containers[0]
         if (!target) {
-            var fixALL = shouldFix(creep, 0.8)
-            if (fixALL) {
+            var fixALL = shouldFix(creep, 0.6)
+            if (fixALL[0]) {
                 fixALL.sort((a,b) => a.hits - b.hits);
                 target = fixALL[0]
             }
@@ -137,8 +137,11 @@ var fix = function(creep, changeJob) {
         return
     }
     var ret = creep.repair(target)
+    if (target.hits >= target.hitsMax) {
+        return think(creep)
+    }
     if (ret === ERR_NOT_IN_RANGE) {
-        creep.moveTo(target);
+        creep.moveTo(target)
     } else if (ret !== OK) {
         creep.say(ret)
     }

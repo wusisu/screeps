@@ -20,6 +20,7 @@ var STAGES = [
     'WAIT-FOR-LEVEL-2',
     'BUILD-5-EXTENTION',
     'WAIT-FOR-LEVEL-3',
+    'BUILD-10-EXTENTION',
     'BUILD-STORAGE',
     'END',
 ]
