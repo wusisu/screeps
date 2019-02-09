@@ -38,7 +38,7 @@ var withdrawTarget = function(creep) {
     var target = creep.pos.findClosestByPath(FIND_STRUCTURES, { 
         filter: function(s) {
             return s.structureType === STRUCTURE_CONTAINER &&
-            _.sum(s.store) > s.storeCapacity * 0.2
+            _.sum(s.store) > 0
         }
     })
     if (target) {

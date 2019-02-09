@@ -41,7 +41,7 @@ var nextToBuild = function(creep) {
 }
 
 var shouldSleep = function(creep) {
-    if (!stage.shouldRun('SPAWN-3-BUILDER')) {
+    if (!stage.shouldRun('SPAWN-1-BUILDER')) {
         if (helper.isMoreThan(creep.room, 'builder', 1)) {
             creep.say('b2c')
             creep.memory.role = 'carrier'

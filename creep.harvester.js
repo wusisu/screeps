@@ -18,6 +18,8 @@ var harvest = function(creep) {
     var ret = creep.harvest(source)
     if (ret === ERR_NOT_IN_RANGE) {
         ret = creep.moveTo(source)
+    } else if (ret !== OK) {
+        creep.say(ret)
     }
 }
 

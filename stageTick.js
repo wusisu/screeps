@@ -31,12 +31,11 @@ var stageDetermines = [
         var fulfill = harvesterHelper.fulfill(room, 1)
         return fulfill ? null : 'HARVESTER-EACH-SOURCE'
     },
-    hasSomeCreeps('SPAWN-3-BUILDER', 'builder', 3),
+    hasSomeCreeps('SPAWN-1-BUILDER', 'builder', 1),
     function(room) {
         var containers = room.find(FIND_STRUCTURES, { filter: { structureType: STRUCTURE_CONTAINER }})
         return containers.length > 0 ? null : 'BUILD-1-CONTAINER'
     },
-    hasSomeCreeps('SPAWN-3-UPDATER', 'updater', 3),
     waitForLevel('WAIT-FOR-LEVEL-2', 2),
     hasSomeStructures('BUILD-5-EXTENTION', STRUCTURE_EXTENSION, 5),
     waitForLevel('WAIT-FOR-LEVEL-3', 3),
