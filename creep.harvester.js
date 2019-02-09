@@ -18,6 +18,8 @@ var harvest = function(creep) {
     var ret = creep.harvest(source)
     if (ret === ERR_NOT_IN_RANGE) {
         ret = creep.moveTo(source)
+    } else if (ret === ERR_NOT_ENOUGH_ENERGY) {
+        return
     } else if (ret !== OK) {
         creep.say(ret)
     }
@@ -33,6 +35,8 @@ var transfer = function(creep) {
     ret = creep.transfer(cache, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         ret = creep.moveTo(cache)
+    } else if (ret !== OK) {
+        creep.say(ret)
     }
 }
 
