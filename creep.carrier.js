@@ -106,7 +106,13 @@ var needRebalance = function(creep) {
     var empty = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(s) {
             return s.structureType === STRUCTURE_CONTAINER &&
-            _.sum(s.store) < s.storeCapacity * 0.4
+            _.sum(s.store) < s.storeCapacity * 0.5
+        }
+    })
+    empty = empty || creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: function(s) {
+            return s.structureType === STRUCTURE_STORAGE &&
+            _.sum(s.store) < s.storeCapacity
         }
     })
     if (!full && !empty) return null

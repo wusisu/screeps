@@ -37,7 +37,7 @@ var isMoreThan = function(room, role, count) {
 var withdrawTarget = function(creep) {
     var target = creep.pos.findClosestByPath(FIND_STRUCTURES, { 
         filter: function(s) {
-            return s.structureType === STRUCTURE_CONTAINER &&
+            return (s.structureType === STRUCTURE_CONTAINER || s.structureType === STRUCTURE_STORAGE) &&
             _.sum(s.store) > 0
         }
     })
