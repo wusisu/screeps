@@ -19,6 +19,9 @@ var charge = function(creep, cache) {
         cache = helper.withdrawTarget(creep)
     }
     var ret = creep.withdraw(cache, RESOURCE_ENERGY);
+    if (ret === OK) {
+        if (helper.isFullOfEnergy(creep)) return upgrade(creep)
+    }
     if (ret !== OK) creep.say(ret)
 }
 

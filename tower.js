@@ -7,6 +7,26 @@ var TASK_REPAIR = 'repair'
 
 var THINK_EVERY_TICKS = 30
 
+var attackTarget = function(tower) {
+    return tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+}
+
+var healTarget = function(tower) {
+    return tower.pos.findClosestByRange(FIND_MY_CREEPS, {
+        filter: function(c) {
+            return c.hits < c.hitsMax
+        }
+    })
+}
+
+var repairTarget = function(tower) {
+    return tower.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(c) {
+            return c.hits < c.hitsMax * 0.5
+        }
+    })
+}
+
 var attack = function(tower) {
     if (!tower.memory.task) tower.memory.task = TASK_ATTACK
 }
@@ -22,10 +42,15 @@ var repair = function(tower) {
 var think = function(tower) {
     tower.memory.task = null
     tower.memory.target = null
-    
-    tower.pos.find
+    var target = attackTarget(tower)
     var energyRate = helper.energyRate(tower)
-    
+    if (target) return attack(tower)
+    if (energyRate < 0.3) return
+    target = healTarget(tower)
+    if (target) return heal(tower)
+    if (energyRate < 0.5) return
+    target = repairTarget(tower)
+    if (target) return repair(tower)
 }
 
 var step = function(tower) {

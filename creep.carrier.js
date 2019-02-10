@@ -109,13 +109,21 @@ var needRebalance = function(creep) {
             _.sum(s.store) < s.storeCapacity * 0.5
         }
     })
-    empty = empty || creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    if (!full && !empty) return null
+    if (full) empty = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(s) {
             return s.structureType === STRUCTURE_STORAGE &&
             _.sum(s.store) < s.storeCapacity
         }
-    })
-    if (!full && !empty) return null
+    });
+    else {
+        full = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: function(s) {
+                return s.structureType === STRUCTURE_STORAGE &&
+                _.sum(s.store) > 0
+            }
+        });
+    }
     return {full, empty}
 }
 
