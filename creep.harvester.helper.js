@@ -1,4 +1,3 @@
-var prefer = require('prefer')
 var creepHelper = require('creep.helper')
 var stage = require('stage')
 
@@ -7,20 +6,24 @@ var findSource = function(creep) {
     var sources = creep.room.find(FIND_SOURCES)
 }
 
+var findEmptySource = function(room) {
+    var sources = room.find(FIND_SOURCES)
+    var harvesters = room.find(FIND_CREEPS, {filter: creepHelper.roleFilter('harvester')})
+    var assignedSourcesIds = harvesters.map(h => h.memory.source)
+    var source = sources.find(s => !(assignedSourcesIds.filter(asi => asi === s.id).length > 1))
+    return source
+}
+
+var fulfill = function(room) {
+    return !findEmptySource(room)
+}
+
 var ensureSource = function(creep) {
     if (!creep.memory || !creep.memory.source) {
-        var binding = sourceBinding(creep.room)
-        var sourcePfs = sourcePrefer(creep.room)
-        if (!sourcePfs) return
-        for (var sourceId in sourcePfs) {
-            var sourcePf = sourcePfs[sourceId]
-            var preferCount = sourcePf.creeps
-            var actualCount = binding[sourceId] || 0
-            creep.say('source')
-            if (preferCount > actualCount) {
-                creep.memory.source = sourceId
-                break
-            }
+        // each soruce 2 harvester
+        var source = findEmptySource(creep.room)
+        if (source) {
+            creep.memory.source = source.id
         }
     }
     return Game.getObjectById(creep.memory.source)
@@ -35,48 +38,11 @@ var ensureCache = function(creep) {
         })
         if (!cache) cache = creep.room.find(FIND_MY_SPAWNS)[0]
         if (!cache) {
-            console.log('no prefer cache ?')
+            console.log('no cache ?')
         }
         creep.memory.cache = cache.id
     }
     return Game.getObjectById(creep.memory.cache)
-}
-
-var sourcePrefer = function(room) {
-    var preferRoom = prefer.rooms[room.name]
-    if (!preferRoom || !preferRoom.sources) {
-        console.log('no prefer for room ' + room.name)
-        return null
-    }
-    return preferRoom.sources
-}
-
-var sourceBinding = function(room) {
-    var creeps = room.find(FIND_CREEPS, {filter: creepHelper.roleFilter('harvester')})
-    var binding = _.reduce(creeps, function(result, creep, creepName) {
-        if (!creep.memory || !creep.memory.source) return result
-        var source = creep.memory.source
-        if (!result[source]) result[source] = 0
-        result[source] += 1
-        return result
-    }, {})
-    return binding
-}
-
-var fulfill = function(room, diff) {
-    diff = diff || 0
-    var binding = sourceBinding(room)
-    var sourcePfs = sourcePrefer(room)
-    if (!sourcePfs) return
-    for (var sourceId in sourcePfs) {
-        var sourcePf = sourcePfs[sourceId]
-        var preferCount = sourcePf.creeps
-        var actualCount = binding[sourceId] || 0
-        if (preferCount > actualCount + diff) {
-            return false
-        }
-    }
-    return true
 }
 
 var considerFull = function(creep) {
@@ -92,7 +58,6 @@ var considerFull = function(creep) {
 module.exports = {
     findSource,
     ensureSource,
-    sourceBinding,
     fulfill,
     ensureCache,
     considerFull,

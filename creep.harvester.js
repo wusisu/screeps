@@ -20,6 +20,8 @@ var harvest = function(creep) {
         ret = creep.moveTo(source)
     } else if (ret === ERR_NOT_ENOUGH_ENERGY) {
         return
+    } else if (ret === ERR_INVALID_TARGET) {
+        creep.memory.source = null
     } else if (ret !== OK) {
         creep.say(ret)
     }

@@ -97,6 +97,7 @@ var getTemplate = function(spawn, role) {
         extensions.length * 50 + 300,
         harvesters.length * 300,
     ])
+    energyLimit = _.max(energyLimit, 300)
     return getTemplateWithEnergyLimit(spawn, role, energyLimit)
 }
 

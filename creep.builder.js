@@ -127,7 +127,6 @@ var fix = function(creep, changeJob) {
         if (containers[0]) target = containers[0]
         if (!target) {
             var fixALL = shouldFix(creep, 0.6)
-            console.log(fixALL)
             if (fixALL[0]) {
                 fixALL.sort((a,b) => 1.0*a.hits/a.hitsMax - 1.0*b.hits/b.hitsMax);
                 target = fixALL[0]
