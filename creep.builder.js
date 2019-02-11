@@ -45,12 +45,12 @@ var shouldSleep = function(creep) {
         if (helper.isMoreThan(creep.room, 'builder', 1)) {
             creep.say('b2c')
             creep.memory.role = 'carrier'
-            return
+            return true
         }
         creep.say('stopped')
-        return
+        return true
     }
-    return true
+    return
 }
 
 var build = function(creep, changeJob) {
@@ -58,7 +58,7 @@ var build = function(creep, changeJob) {
     if (helper.hasNoneEnergy(creep)) {
         return think(creep)
     }
-    if (!shouldSleep(creep)) return
+    if (shouldSleep(creep)) return
     var building = Game.getObjectById(creep.memory.target)
     if (!building) {
         building = nextToBuild(creep)
@@ -120,15 +120,16 @@ var fix = function(creep, changeJob) {
     if (helper.hasNoneEnergy(creep)) {
         return think(creep)
     }
-    if (!shouldSleep(creep)) return
+    if (shouldSleep(creep)) return
     var target = Game.getObjectById(creep.memory.target)
     if (!target) {
         var containers = shouldFix(creep, 0.2, STRUCTURE_CONTAINER)
         if (containers[0]) target = containers[0]
         if (!target) {
             var fixALL = shouldFix(creep, 0.6)
+            console.log(fixALL)
             if (fixALL[0]) {
-                fixALL.sort((a,b) => a.hits - b.hits);
+                fixALL.sort((a,b) => 1.0*a.hits/a.hitsMax - 1.0*b.hits/b.hitsMax);
                 target = fixALL[0]
             }
         }
