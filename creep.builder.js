@@ -95,11 +95,32 @@ var withdraw = function(creep, changeJob) {
         return think(creep)
     }
     var cache = ensureCache(creep)
-    if (!cache) return
+    if (!cache) return pickup(creep)
     var ret = creep.withdraw(cache, RESOURCE_ENERGY)
     if (ret === ERR_NOT_IN_RANGE) {
         creep.moveTo(cache)
     } else if (ret === ERR_NOT_ENOUGH_ENERGY) {
+        return think(creep)
+    } else if (ret !== OK) {
+        creep.say(ret)
+    }
+}
+
+var pickup = function(creep) {
+    var target = Game.getObjectById(creep.memory.energy)
+    if (!target) {
+        target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+        if (!target) {
+            if (!helper.hasNoneEnergy(creep)) creep.memory.task = TASK_TRANSFER
+            creep.memory.task = null
+            return 
+        }
+        creep.memory.energy = target.id
+    }
+    var ret = creep.pickup(target)
+    if (ret === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target);
+    } else if (ret === ERR_INVALID_TARGET) {
         return think(creep)
     } else if (ret !== OK) {
         creep.say(ret)
