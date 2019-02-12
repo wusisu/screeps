@@ -8,6 +8,7 @@ var FINISH_COUNT = 5
 var harvest = function(creep) {
     var source = harvesterHelper.ensureSource(creep)
     if (harvesterHelper.considerFull(creep)) {
+        creep.memory.cache = null
         if (!stage.after('SPAWN-1-CARRIER')) creep.memory.cache = creep.room.find(FIND_MY_SPAWNS)[0].id
         if (!stage.between('HARVESTER-EACH-SOURCE', 'BUILD-1-CONTAINER')) {
             creep.memory.task = 'transfer'
