@@ -54,6 +54,14 @@ var pickup = function(creep, changeJob) {
 }
 
 var transferTarget = function(creep, emergency) {
+    var tower = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: function(c) {
+            return c.structureType === STRUCTURE_TOWER &&
+            c.energy < c.energyCapacity * 0.5
+        },
+        range: 20
+    })
+    if (tower) return tower
     var spawn = creep.room.find(FIND_MY_SPAWNS)[0]
     if (spawn.energy < spawn.energyCapacity) {
         return spawn
@@ -110,6 +118,7 @@ var needRebalance = function(creep) {
         }
     })
     if (!full && !empty) return null
+    if (full && empty) return {full, empty}
     if (full) empty = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: function(s) {
             return s.structureType === STRUCTURE_STORAGE &&

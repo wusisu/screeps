@@ -13,7 +13,7 @@ var harvest = function(creep) {
         if (!stage.between('HARVESTER-EACH-SOURCE', 'BUILD-1-CONTAINER')) {
             creep.memory.task = 'transfer'
             creep.memory.cache = null
-            return transfer(creep)
+            return
         }
     }
     var ret = creep.harvest(source)
